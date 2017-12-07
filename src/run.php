@@ -20,9 +20,9 @@ function getRankList(Client $client, $date, $token)
         ],
 //    'debug' => true,
         'form_params' => [
-            'listCat'   => '3',
-            'listType'  => '0',
-            'rankRange' => '1',
+            'listCat'   => '3',//1：免费榜 2：付费榜 3：畅销榜
+            'listType'  => '0',//有点多， 0为总榜
+            'rankRange' => '1',//区间 1：1~30 2:31~100 3:201~600 。。。 最大为8:1201~1391
             'listDate'  => $date
         ]
     ]);
@@ -31,9 +31,6 @@ function getRankList(Client $client, $date, $token)
 
     return $body;
 }
-
-$rankCsv = Writer::createFromPath('data/rank.csv', 'w');
-$appCsv  = Writer::createFromPath('data/app.csv', 'w');
 
 $client = new Client(['cookies' => true]);
 $r      = $client->request('GET', 'http://fsight.qq.com/GameList?type=hotRank');
@@ -46,20 +43,22 @@ $wetest_token = explode('=', $wetest_token)[1];
 $wetest_token = explode(';', $wetest_token)[0];
 $wetest_token = urldecode($wetest_token);
 
-var_dump($wetest_token);
-
-
 $app = [];
 
+//起止时间
 $curDate = "2017-11-01";
 $endDate = "2017-12-01";
+
+$rankCsv = Writer::createFromPath("data/{$curDate}_{$endDate}_rank.csv", 'w');
+$appCsv  = Writer::createFromPath("data/{$curDate}_{$endDate}_app.csv", 'w');
+
 while ($curDate != $endDate) {
 
     $ranks = getRankList($client, $curDate, $wetest_token)['ret']['ranks'];
-    $val = [];
+    $val   = [];
     foreach ($ranks as $rank) {
         $app[$rank['entityId']] = $rank['game_name'];
-        $val[]= $rank['entityId'];
+        $val[]                  = $rank['entityId'];
     }
     $rankCsv->insertOne($val);
 
