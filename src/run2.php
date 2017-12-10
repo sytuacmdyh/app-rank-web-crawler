@@ -20,7 +20,7 @@ function getRankList(Client $client, $date, $token, $rankRange = 1)
         ],
 //    'debug' => true,
         'form_params' => [
-            'listCat'   => '1',//1：免费榜 2：付费榜 3：畅销榜
+            'listCat'   => '3',//1：免费榜 2：付费榜 3：畅销榜
             'listType'  => '0',//有点多， 0为总榜
             'rankRange' => $rankRange,//区间 1：1~30 2:31~200 3:201~600 。。。 最大为8:1201~1391
             'listDate'  => $date
@@ -50,13 +50,12 @@ $wetest_token = explode(';', $wetest_token)[0];
 $wetest_token = urldecode($wetest_token);
 
 //起止时间
-$curDate = "2016-12-01";
-//$curDate = "2017-11-01";
+$curDate = "2017-11-01";
 $endDate = "2017-12-01";
 
 //创建csv文件
-$rankCsv = Writer::createFromPath("data/{$curDate}_{$endDate}_rank_free.csv", 'w');
-$appCsv  = Writer::createFromPath("data/{$curDate}_{$endDate}_app_free.csv", 'w');
+$rankCsv = Writer::createFromPath("data/{$curDate}_{$endDate}_rank.csv", 'w');
+$appCsv  = Writer::createFromPath("data/{$curDate}_{$endDate}_app.csv", 'w');
 
 //保存所有应用信息
 $app = [];
@@ -77,9 +76,6 @@ while ($curDate != $endDate) {
 }
 
 //保存应用信息
-foreach ($app as $key => $value)
-{
+foreach ($app as $key => $value) {
     $appCsv->insertOne([$key, $value]);
 }
-
-
