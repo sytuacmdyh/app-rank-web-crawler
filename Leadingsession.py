@@ -2,17 +2,17 @@ import csv
 import matplotlib.pyplot as plt
 
 # appId = '3244609'
-appId = '516140'
+appId = '72'
 
-x = range(364)
+x = range(1,366)
 y = []
 
-with open('data/2016-12-01_2017-12-01_rank.csv', 'r') as f:
-    f.readline()
+with open('data/2016-12-01_2017-12-01_rank_free.csv', 'r') as f:
     reader = csv.reader(f)
     for line in reader:
         try:
             y.append(line.index(appId) + 1)
+            print(line.index(appId)+1)
         except ValueError:
             y.append(10000)
 
@@ -26,6 +26,7 @@ class LeadingEvent:
 
 
 class LeadingSession:
+	
     eventList = []
     startTime = None
     endTime = None
@@ -33,26 +34,27 @@ class LeadingSession:
     def addEvent(self, leadingEvent):
         self.eventList.append(leadingEvent)
         self.endTime = leadingEvent.endTime
-        if not self.startTime:
-            self.startTime = leadingEvent.startTime
 
-
-K = 75
+K = 200
 T = 7
 eventList = []
 event = None
-for i in range(len(y)):
+for i in range(0,len(y)):
     if y[i] <= K:
         if event:
-            event.endTime = i
+            event.endTime = i+1
         else:
             event = LeadingEvent()
-            event.startTime = event.endTime = i
+            event.startTime = event.endTime = i+1
     elif event:
         eventList.append(event)
         event = None
 if event:
     eventList.append(event)
+    
+print("leadingevent:")
+for event in eventList:
+	print(str(event.startTime)+"_"+str(event.endTime))
 
 # for event in eventList:
 #     print(event.startTime)
@@ -63,6 +65,7 @@ for event in eventList:
     if not session:
         session = LeadingSession()
         session.addEvent(event)
+        session.startTime = event.startTime
         continue
     if session.endTime + 7 >= event.startTime:
         session.addEvent(event)
@@ -70,17 +73,17 @@ for event in eventList:
         sessionList.append(session)
         session = LeadingSession()
         session.addEvent(event)
+        session.startTime = event.startTime
 if session:
     sessionList.append(session)
 
+print("leadingsession:")
 for session in sessionList:
-    print(session.startTime)
-    print(session.endTime)
+    print(str(session.startTime)+"_"+str(session.endTime))
 
-#
-# plt.figure()
-# plt.plot(x, y)
-# plt.ylim(0, 200)
-#
-# plt.gca().invert_yaxis()
-# plt.show()
+
+plt.figure()
+plt.plot(x, y)
+plt.ylim(0, 200)
+plt.gca().invert_yaxis()
+plt.show()
