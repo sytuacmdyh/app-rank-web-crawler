@@ -2,10 +2,10 @@ import Leadingsession as ls
 import math
 
 R = 100
-degrees = []
+indexs = []
 
 for session in ls.sessionList:
-    degree_sum = []
+    index_sum = []
     for event in session.eventList:
         startTime = event.startTime
         endTime = event.endTime
@@ -23,34 +23,38 @@ for session in ls.sessionList:
             continue
         try:
             print('~~', startTime,middle1Time,middle2Time,endTime)
-            degree1 = math.atan((ls.K - ls.y[middle1Time]) / (middle1Time - startTime))
-            degree2 = math.atan((ls.K - ls.y[middle2Time]) / (endTime - middle2Time))
-            degree_sum.append(degree1 + degree2)
+            t_change=middle2Time-middle1Time+1
+            sum_rank=0
+            for time in range(middle1Time,middle2Time,1):
+                sum_rank+=ls.y[time]
+            rank_average=sum_rank/t_change
+            index=(ls.K-rank_average)/t_change
+            index_sum.append(index)
         except ZeroDivisionError:
             print('******')
             continue
-    if len(degree_sum) == 0:
+    if len(index_sum) == 0:
         continue
-    degree_s = sum(degree_sum) / len(degree_sum)
-    degrees.append(degree_s)
-if len(degrees) == 0:
+    index_s = sum(index_sum) / len(index_sum)
+    indexs.append(index_s)
+if len(indexs) == 0:
     print('无数据')
     exit(1)
 
-if len(degrees) == 1:
-	print(degrees[0])
+if len(indexs) == 1:
+	print(indexs[0])
 	exit(1)
 	
-average = sum(degrees) / len(degrees)
+average = sum(indexs) / len(indexs)
 variance = 0
-sum_degree=0
+sum_index=0
 
-for i in degrees:
-	sum_degree+=(i - average) * (i - average)
+for i in indexs:
+	sum_index+=(i - average) * (i - average)
 #	variance = (i - average) * (i - average)
 #	evidence1 = 1 / 2 * (1 + math.erf((i - average) / (math.sqrt(variance) * math.sqrt(2))))
 #	print(i,evidence1);
-variance = sum_degree / len(degrees)  #均值
-for sdegree in degrees:
-    evidence1 = 1 / 2 * (1 + math.erf((sdegree - average) / (variance * math.sqrt(2))))
-    print(sdegree,evidence1);
+variance = sum_index / len(indexs)  #均值
+for sindex in indexs:
+    evidence2 = 1 / 2 * (1 + math.erf((sindex - average) / (variance * math.sqrt(2))))
+    print(sindex,evidence2);

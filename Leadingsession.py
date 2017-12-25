@@ -2,7 +2,7 @@ import csv
 import matplotlib.pyplot as plt
 
 # appId = '3244609'
-appId = '72'
+appId = '34636'
 
 x = range(1,366)
 y = []
@@ -12,7 +12,6 @@ with open('data/2016-12-01_2017-12-01_rank_free.csv', 'r') as f:
     for line in reader:
         try:
             y.append(line.index(appId) + 1)
-            print(line.index(appId)+1)
         except ValueError:
             y.append(10000)
 
@@ -27,11 +26,13 @@ class LeadingEvent:
 
 class LeadingSession:
 	
-    eventList = []
+    eventList = None
     startTime = None
     endTime = None
 
     def addEvent(self, leadingEvent):
+        if not self.eventList:
+            self.eventList = []
         self.eventList.append(leadingEvent)
         self.endTime = leadingEvent.endTime
 
@@ -80,6 +81,7 @@ if session:
 print("leadingsession:")
 for session in sessionList:
     print(str(session.startTime)+"_"+str(session.endTime))
+    #print(len(session.eventList))
 
 
 plt.figure()
