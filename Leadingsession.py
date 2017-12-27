@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # appId = '3244609'
 appId = '34636'
 
-x = range(1,366)
+x = range(1, 366)
 y = []
 
 with open('data/2016-12-01_2017-12-01_rank_free.csv', 'r') as f:
@@ -25,7 +25,6 @@ class LeadingEvent:
 
 
 class LeadingSession:
-	
     eventList = None
     startTime = None
     endTime = None
@@ -36,26 +35,27 @@ class LeadingSession:
         self.eventList.append(leadingEvent)
         self.endTime = leadingEvent.endTime
 
+
 K = 200
 T = 7
 eventList = []
 event = None
-for i in range(0,len(y)):
+for i in range(0, len(y)):
     if y[i] <= K:
         if event:
-            event.endTime = i+1
+            event.endTime = i + 1
         else:
             event = LeadingEvent()
-            event.startTime = event.endTime = i+1
+            event.startTime = event.endTime = i + 1
     elif event:
         eventList.append(event)
         event = None
 if event:
     eventList.append(event)
-    
+
 print("leadingevent:")
 for event in eventList:
-	print(str(event.startTime)+"_"+str(event.endTime))
+    print(str(event.startTime) + "_" + str(event.endTime))
 
 # for event in eventList:
 #     print(event.startTime)
@@ -80,9 +80,8 @@ if session:
 
 print("leadingsession:")
 for session in sessionList:
-    print(str(session.startTime)+"_"+str(session.endTime))
-    #print(len(session.eventList))
-
+    print(str(session.startTime) + "_" + str(session.endTime))
+    # print(len(session.eventList))
 
 plt.figure()
 plt.plot(x, y)
